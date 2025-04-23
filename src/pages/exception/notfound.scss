@@ -1,0 +1,25 @@
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    font-family: Arial, sans-serif;
+    color: #444;
+  
+    h1 {
+      font-size: 3rem;
+      color: #ff4c4c;
+    }
+  
+    p {
+      margin: 10px 0 20px;
+      font-size: 1.2rem;
+    }
+  
+    a {
+      color: #007bff;
+      text-decoration: underline;
+    }
+  }
+  

@@ -1,0 +1,62 @@
+.holiday-grid.fancy-style {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    background: #f9f9f9;
+  }
+  
+  .holiday-card.fancy-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    // display: flex;
+    padding: 16px;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .holiday-card.fancy-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .holiday-date.fancy-date {
+    background-color: #6439ff;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 70px;
+    margin-right: 16px;
+    font-weight: bold;
+  }
+  
+  .fancy-month {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+  
+  .fancy-day {
+    font-size: 1.5rem;
+    margin-top: 4px;
+  }
+  
+  .holiday-desc.fancy-desc {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .fancy-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    padding-top:2px;
+    padding-left:2px;
+  }
+  
+  .fancy-dayName {
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 4px;
+  }
+  
