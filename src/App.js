@@ -12,9 +12,20 @@ import { DarkModeContext } from "./context/darkModeContext";
 import { RequireAuth } from "react-auth-kit";
 import NotFound from "./pages/exception/NotFound";
 import { ToastContainer } from "react-toastify";
-import TeamMembers from "../src/pages/teamMembers/TeamMembers"
+import Calender from "./pages/teamMembers/TeamMembers"
+import LeaveApplicationList from "../src/pages/leave/LeaveApplicationList"
 import "react-toastify/dist/ReactToastify.css"; // import toastify styles
-
+import EditLeaveApplication from "../src/pages/leave/EditLeaveApplication"
+import ViewApplicationLeaveDetails from "../src/pages/leave/ViewApplicationLeaveDetails"
+import ManageTeam from "../src/components/datatable/team/TeamListDatatable"
+import ViewLeaveDetails from "../src/components/datatable/team/TeamListDatatable"
+import TeamList from "../src/pages/team/TeamList"
+import AddTeam from "../src/pages/team/NewTeam"
+import UpdateTeam from "./components/datatable/team/UpdateTeam";
+import LeaveType from "../src/pages/leaveType/LeaveType"
+import LeaveTypeCreate from "./pages/leaveType/Application"
+import DepartmentCreation from "./pages/department/DepartmentCreation"
+import Department from "./pages/department/Department"
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -35,10 +46,107 @@ function App() {
             }
           />
           <Route
-            path="/team/members"
+            path="/leave"
             element={
               <RequireAuth loginPath="/">
-                <TeamMembers />
+                <LeaveApplicationList />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/application"
+            element={
+              <RequireAuth loginPath="/">
+                <Application inputs={userInputs} title="Add New Leave Application" />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/view/details/:id"
+            element={
+              <RequireAuth loginPath="/">
+                <ViewApplicationLeaveDetails inputs={userInputs} title="Add New Leave Application" />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/application/edit/:id"
+            element={
+              <RequireAuth loginPath="/">
+                <EditLeaveApplication />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/calender"
+            element={
+              <RequireAuth loginPath="/">
+                <Calender />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/team"
+            element={
+              <RequireAuth loginPath="/">
+                {/* <ManageTeam /> */}
+                <TeamList />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/team/edit/:id"
+            element={
+              <RequireAuth loginPath="/">
+                <UpdateTeam />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/new/team"
+            element={
+              <RequireAuth loginPath="/">
+                <AddTeam />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/type"
+            element={
+              <RequireAuth loginPath="/">
+                <LeaveType />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/type/new"
+            element={
+              <RequireAuth loginPath="/">
+                <LeaveTypeCreate />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/type/edit"
+            element={
+              <RequireAuth loginPath="/">
+                <LeaveTypeCreate />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/department"
+            element={
+              <RequireAuth loginPath="/">
+                <Department/>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/department/new"
+            element={
+              <RequireAuth loginPath="/">
+                <DepartmentCreation />
               </RequireAuth>
             }
           />
@@ -66,14 +174,7 @@ function App() {
               </RequireAuth>
             }
           />
-          <Route
-            path="/leave/application"
-            element={
-              <RequireAuth loginPath="/">
-                <Application inputs={userInputs} title="Add New Leave Application" />
-              </RequireAuth>
-            }
-          />
+
           <Route
             path="/products"
             element={

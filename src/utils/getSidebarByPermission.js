@@ -5,7 +5,7 @@ import SidebarStaff from "../components/sidebar/SidebarStaff";
 
 export const getSidebarByPermission = (permission) => {
     if (permission === "ADMIN") {
-        return <SidebarAdmin />;
+        return  <SidebarStaff/>;
     } else if (permission === "STAFF") {
         return <SidebarStaff/>;
     } else {

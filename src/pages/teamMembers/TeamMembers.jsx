@@ -12,7 +12,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { getSidebarByPermission } from "../../utils/getSidebarByPermission";
 
-const TeamMembers = () => {
+const Calender = () => {
   const auth = useAuthUser();
   const user = auth();
   const navigate = useNavigate();
@@ -75,4 +75,4 @@ const TeamMembers = () => {
   );
 };
 
-export default TeamMembers;
+export default Calender;

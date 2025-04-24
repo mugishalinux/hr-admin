@@ -17,8 +17,14 @@ import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 import { useSignOut } from "react-auth-kit";
 import { useAuthUser } from "react-auth-kit";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { CalendarViewDay, CalendarViewDayRounded } from "@material-ui/icons";
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import SegmentIcon from '@mui/icons-material/Segment';
 
 const Sidebar = () => {
+    const auth = useAuthUser();
+    const user = auth();
     const { dispatch } = useContext(DarkModeContext);
     const signOut = useSignOut();
     const handleLogout = () => {
@@ -44,18 +50,42 @@ const Sidebar = () => {
                     </Link>
 
                     <p className="title">LISTS</p>
-                    <Link to="/leave/application" style={{ textDecoration: "none" }}>
+                    <Link to="/leave/" style={{ textDecoration: "none" }}>
                         <li>
                             <FlightIcon className="icon" />
                             <span>Leave Application</span>
                         </li>
                     </Link>
-                    <Link to="/team/members" style={{ textDecoration: "none" }}>
+                    <Link to="/calender" style={{ textDecoration: "none" }}>
                         <li>
-                            <PersonOutlineIcon className="icon" />
-                            <span>Team members</span>
+                            <CalendarMonthIcon className="icon" />
+                            <span>Calender</span>
                         </li>
                     </Link>
+                    {user?.permissions !== 'ADMIN' && (
+                        <Link to="/team" style={{ textDecoration: "none" }}>
+                            <li>
+                                <PersonOutlineIcon className="icon" />
+                                <span>Team members</span>
+                            </li>
+                        </Link>
+                    )}
+                    {user?.permissions == 'ADMIN' && (
+                        <Link to="/leave/type" style={{ textDecoration: "none" }}>
+                            <li>
+                                <SegmentIcon className="icon" />
+                                <span>Leave Type</span>
+                            </li>
+                        </Link>
+                    )}
+                    {user?.permissions == 'ADMIN' && (
+                        <Link to="/department" style={{ textDecoration: "none" }}>
+                            <li>
+                                <ApartmentIcon className="icon" />
+                                <span>Department</span>
+                            </li>
+                        </Link>
+                    )}
                     <Link
                         to="/"
                         onClick={handleLogout}
@@ -75,7 +105,7 @@ const Sidebar = () => {
                 ></div>
                 <div
                     className="colorOption"
-                    onClick={() => dispatch({ type: "DARK" })}
+                // onClick={() => dispatch({ type: "DARK" })}
                 ></div>
             </div>
         </div>

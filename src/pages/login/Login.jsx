@@ -28,13 +28,13 @@ const Login = () => {
     try {
       const response = await axios.post(`${BASE_URL}/api/users/login`, data);
 
-      const { id, token, permissions } = response.data;
+      const { id, token, permissions,departmentId} = response.data;
 
       const success = signIn({
         token,
         expiresIn: 3600,
         tokenType: "Bearer",
-        authState: { id, permissions, jwtToken: token },
+        authState: { id, permissions, jwtToken: token , departmentId },
       });
 
       if (success) {
