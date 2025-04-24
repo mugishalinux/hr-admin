@@ -21,13 +21,20 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { CalendarViewDay, CalendarViewDayRounded } from "@material-ui/icons";
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import SegmentIcon from '@mui/icons-material/Segment';
+import PolicyIcon from '@mui/icons-material/Policy';
+import { useMsal, useIsAuthenticated } from "@azure/msal-react";
 
 const Sidebar = () => {
+    const { instance, accounts } = useMsal();
     const auth = useAuthUser();
     const user = auth();
     const { dispatch } = useContext(DarkModeContext);
     const signOut = useSignOut();
     const handleLogout = () => {
+        instance.logoutRedirect({
+            postLogoutRedirectUri: "http://localhost:3000",
+          });
+       
         signOut();
     };
 
@@ -83,6 +90,14 @@ const Sidebar = () => {
                             <li>
                                 <ApartmentIcon className="icon" />
                                 <span>Department</span>
+                            </li>
+                        </Link>
+                    )}
+                    {user?.permissions == 'ADMIN' && (
+                        <Link to="/leave/policies" style={{ textDecoration: "none" }}>
+                            <li>
+                                <PolicyIcon className="icon" />
+                                <span>Accrual & Carry forward </span>
                             </li>
                         </Link>
                     )}

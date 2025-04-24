@@ -26,6 +26,8 @@ import LeaveType from "../src/pages/leaveType/LeaveType"
 import LeaveTypeCreate from "./pages/leaveType/Application"
 import DepartmentCreation from "./pages/department/DepartmentCreation"
 import Department from "./pages/department/Department"
+import PolicySetting from './pages/policySetting/PolicySetting'
+import LeavePolicySetting from './pages/policySetting/LeavePolicySetting'
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -138,7 +140,7 @@ function App() {
             path="/department"
             element={
               <RequireAuth loginPath="/">
-                <Department/>
+                <Department />
               </RequireAuth>
             }
           />
@@ -147,6 +149,22 @@ function App() {
             element={
               <RequireAuth loginPath="/">
                 <DepartmentCreation />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/policies"
+            element={
+              <RequireAuth loginPath="/">
+                <PolicySetting />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leave/policy/setting"
+            element={
+              <RequireAuth loginPath="/">
+                <LeavePolicySetting />
               </RequireAuth>
             }
           />

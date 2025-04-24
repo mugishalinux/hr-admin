@@ -89,7 +89,7 @@ const StaffLeaveHistory = () => {
               <TableCell className="tableCell">Leave Type</TableCell>
               <TableCell className="tableCell">Start Date</TableCell>
               <TableCell className="tableCell">End Date</TableCell>
-              <TableCell className="tableCell">Days Requested</TableCell>
+              {/* <TableCell className="tableCell">Days Requested</TableCell> */}
               <TableCell className="tableCell">Requested At</TableCell>
               <TableCell className="tableCell">Status</TableCell>
             </TableRow>
@@ -101,9 +101,9 @@ const StaffLeaveHistory = () => {
                   <TableCell className="tableCell">{app.leaveType?.name}</TableCell>
                   <TableCell className="tableCell">{formatDateOnly(app.startDate)}</TableCell>
                   <TableCell className="tableCell">{formatDateOnly(app.endDate)}</TableCell>
-                  <TableCell className="tableCell">
+                  {/* <TableCell className="tableCell">
                     {calculateDaysRequested(app.startDate, app.endDate, app.halfDay)}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="tableCell">{formatDateTime(app.createdAt)}</TableCell>
                   <TableCell className="tableCell">
                     <span

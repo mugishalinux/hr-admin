@@ -7,6 +7,8 @@ import axios from "axios";
 import { BASE_URL } from "../../../config/baseUrl.js";
 import { useAuthUser } from "react-auth-kit";
 import { toast } from "react-toastify";
+import { useSignIn } from "react-auth-kit";
+
 import {
   Dialog,
   DialogTitle,
@@ -42,9 +44,9 @@ const LeaveListDatatable = () => {
         id: item.id,
         leaveTypeName: item.leaveType.name,
         name: item.user.fullName,
-        daysRequested: item.halfDay
-          ? 1
-          : new Date(item.endDate).getDate() - new Date(item.startDate).getDate() + 1,
+        // daysRequested: item.halfDay
+        //   ? 1
+        //   : new Date(item.endDate).getDate() - new Date(item.startDate).getDate() + 1,
         startDate: item.startDate,
         endDate: item.endDate,
         reason: item.reason,

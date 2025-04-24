@@ -9,11 +9,11 @@ export const leaveApplicationColumns = [
     headerName: "Requested By",
     width: 200,
   },
-  {
-    field: "daysRequested",
-    headerName: "Days Requested",
-    width: 150,
-  },
+  // {
+  //   field: "daysRequested",
+  //   headerName: "Days Requested",
+  //   width: 150,
+  // },
   {
     field: "startDate",
     headerName: "Start Date",
