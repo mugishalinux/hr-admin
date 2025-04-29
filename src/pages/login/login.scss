@@ -59,4 +59,146 @@
       }
     }
   }
+
+  .login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f5f7fa;
+  }
+  
+  .login-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+  }
+  
+  .login-content h2 {
+    margin-bottom: 5px;
+    font-size: 24px;
+    color: #222;
+  }
+  
+  .login-content h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .login-content p {
+    color: #777;
+    margin-bottom: 30px;
+  }
+  
+  .microsoft-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #2f2f2f;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  
+  .microsoft-login:hover {
+    background-color: #1b1b1b;
+  }
+  
+  .microsoft-logo {
+    width: 20px;
+    height: 20px;
+  }
+  .login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f5f6fa;
+  }
+  
+  .login-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 400px;
+  }
+  
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  
+    h2 {
+      color: #6439ff;
+    }
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  
+    .input-field {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+  
+    .login-btn {
+      background-color: #6439ff;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+  
+      &:hover {
+        background-color: #4a2ecc;
+      }
+    }
+  }
+  
+  .divider {
+    text-align: center;
+    margin: 1.5rem 0;
+    font-weight: bold;
+    color: #999;
+  }
+  
+  .microsoft-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f2f1;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  
+    &:hover {
+      background-color: #e1e1e1;
+    }
+  
+    .microsoft-logo {
+      width: 20px;
+      margin-right: 10px;
+    }
+  }
+  
   

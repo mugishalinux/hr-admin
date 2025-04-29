@@ -26,10 +26,28 @@ const Navbar = () => {
   const auth = useAuthUser();
   const user = auth();
 
+  const [userImage, setUserImage] = useState(user?.image || null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/users/single`, {
+        headers: {
+          Accept: "*/*",
+          Authorization: `Bearer ${user?.jwtToken}`,
+        },
+      });
+      const profileImage = response.data.profile;
+      if (profileImage) {
+        setUserImage(profileImage);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user profile", error);
+    }
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -100,6 +118,14 @@ const Navbar = () => {
     }
   }, [user?.jwtToken]);
 
+  useEffect(() => {
+    if (!user?.image || user?.image === "") {
+      fetchUserProfile();
+    } else {
+      setUserImage(user?.image);
+    }
+  }, [user]);
+
   const filteredNotifications =
     tabIndex === 0
       ? notifications
@@ -132,15 +158,22 @@ const Navbar = () => {
           </div>
 
           <div className="item">
-            <img
-              src={user?.image==""?"https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500":user?.image}
-              alt="avatar"
-              className="avatar"
-            />
+            {userImage ? (
+              <img
+                src={userImage}
+                alt="avatar"
+                className="avatar"
+              />
+            ) : (
+              <div className="avatar-initial">
+                {user?.fullName?.charAt(0).toUpperCase() || "U"}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Notifications Dialog */}
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}

@@ -28,6 +28,8 @@ import DepartmentCreation from "./pages/department/DepartmentCreation"
 import Department from "./pages/department/Department"
 import PolicySetting from './pages/policySetting/PolicySetting'
 import LeavePolicySetting from './pages/policySetting/LeavePolicySetting'
+import Users from './pages/users/User'
+import NewUser from './pages/users/NewUser'
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -91,7 +93,7 @@ function App() {
             path="/team"
             element={
               <RequireAuth loginPath="/">
-                {/* <ManageTeam /> */}
+
                 <TeamList />
               </RequireAuth>
             }
@@ -172,48 +174,16 @@ function App() {
             path="/users"
             element={
               <RequireAuth loginPath="/">
-                <List />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/users/:userId"
-            element={
-              <RequireAuth loginPath="/">
-                <Single />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/users/new"
-            element={
-              <RequireAuth loginPath="/">
-                <New inputs={userInputs} title="Add New User" />
+                <Users />
               </RequireAuth>
             }
           />
 
           <Route
-            path="/products"
+            path="/new/user"
             element={
               <RequireAuth loginPath="/">
-                <List />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/products/:productId"
-            element={
-              <RequireAuth loginPath="/">
-                <Single />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/products/new"
-            element={
-              <RequireAuth loginPath="/">
-                <New inputs={productInputs} title="Add New Product" />
+                <NewUser inputs={userInputs} title="Add New User" />
               </RequireAuth>
             }
           />

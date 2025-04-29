@@ -23,20 +23,36 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import SegmentIcon from '@mui/icons-material/Segment';
 import PolicyIcon from '@mui/icons-material/Policy';
 import { useMsal, useIsAuthenticated } from "@azure/msal-react";
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+    const navigate = useNavigate();
     const { instance, accounts } = useMsal();
     const auth = useAuthUser();
     const user = auth();
     const { dispatch } = useContext(DarkModeContext);
     const signOut = useSignOut();
-    const handleLogout = () => {
-        instance.logoutRedirect({
-            postLogoutRedirectUri: "http://localhost:3000",
-          });
-       
-        signOut();
-    };
+    const handleLogout = async () => {
+        try {
+          const authUser = auth();
+      
+          if (authUser?.loginMethod === "microsoft") {
+         
+            await instance.logoutRedirect({
+              postLogoutRedirectUri: "http://localhost:3000",
+            });
+          } else {
+           
+            signOut();
+            navigate("/"); 
+          }
+        } catch (error) {
+          console.error("Logout error", error);
+        }
+      };
+      
+
 
     return (
         <div className="sidebar">
@@ -101,6 +117,15 @@ const Sidebar = () => {
                             </li>
                         </Link>
                     )}
+                    {user?.permissions == 'ADMIN' && (
+                        <Link to="/users" style={{ textDecoration: "none" }}>
+                            <li>
+                                <GroupAddIcon className="icon" />
+                                <span>Users</span>
+                            </li>
+                        </Link>
+                    )}
+
                     <Link
                         to="/"
                         onClick={handleLogout}

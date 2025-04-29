@@ -7,14 +7,14 @@ import axios from "axios";
 import { BASE_URL } from "../../config/baseUrl";
 import { useAuthUser } from "react-auth-kit";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./application.scss";
 import { getSidebarByPermission } from "../../utils/getSidebarByPermission";
 
 const cloudName = "ded6s1sof";
 const uploadPreset = "pcq731ml";
 
-const Application = () => {
+const EditLeaveApplication = () => {
   const [file, setFile] = useState(null);
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [formData, setFormData] = useState({
@@ -28,6 +28,7 @@ const Application = () => {
   const [requiresReason, setRequiresReason] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { id } = useParams();
 
   const auth = useAuthUser();
   const user = auth();
@@ -51,8 +52,39 @@ const Application = () => {
         toast.error("Failed to fetch leave types");
       }
     };
-    fetchLeaveTypes();
-  }, [user?.jwtToken]);
+
+    const fetchLeaveApplication = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/api/leave-applications/byId/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.jwtToken}`,
+            },
+          }
+        );
+        const data = response.data;
+        setFormData({
+          leaveTypeId: data.leaveType.id,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          reason: data.reason,
+          halfDay: data.halfDay,
+          attachmentPath: data.attachmentPath || "",
+        });
+        setRequiresAttachment(data.leaveType.leaveTypeRequiresAttachment);
+        setRequiresReason(data.leaveType.leaveTypeRequireReason);
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Leave application not found");
+        navigate("/home");
+      }
+    };
+
+    if (user?.jwtToken) {
+      fetchLeaveTypes();
+      fetchLeaveApplication();
+    }
+  }, [user?.jwtToken, id, navigate]);
 
   const handleLeaveTypeChange = (e) => {
     const selectedId = e.target.value;
@@ -117,8 +149,8 @@ const Application = () => {
         payload.attachmentPath = uploadedUrl;
       }
 
-      const response = await axios.post(
-        `${BASE_URL}/api/leave-applications/submit`,
+      const response = await axios.put(
+        `${BASE_URL}/api/leave-applications/update/${id}`,
         payload,
         {
           headers: {
@@ -127,10 +159,10 @@ const Application = () => {
         }
       );
 
-      toast.success(response.data.message || "Leave application submitted successfully");
+      toast.success(response.data.message || "Leave application updated successfully");
       navigate("/home");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to submit leave application");
+      toast.error(error.response?.data?.message || "Failed to update leave application");
       setIsSubmitting(false);
     }
   };
@@ -141,7 +173,7 @@ const Application = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Apply for Leave</h1>
+          <h1>Edit Leave Application</h1>
         </div>
         <div className="bottom redesigned-form">
           <div className="right">
@@ -237,13 +269,10 @@ const Application = () => {
               </div>
 
               <div className="formInput">
-                <button type="submit" disabled={isSubmitting} style={{ backgroundColor: "#6439ff", color: "white" }}>
-                  {isSubmitting ? (
-                    <CircularProgress size={24} sx={{ color: "white" }} />
-                  ) : "Apply"}
+                <button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? <CircularProgress size={24} /> : "Update"}
                 </button>
               </div>
-
             </form>
           </div>
         </div>
@@ -252,4 +281,4 @@ const Application = () => {
   );
 };
 
-export default Application;
+export default EditLeaveApplication;

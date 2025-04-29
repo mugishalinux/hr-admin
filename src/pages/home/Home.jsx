@@ -54,7 +54,7 @@ const Home = () => {
       if (!selectedLeaveType) return;
       try {
         const url = selectedLeaveType.affectsBalance
-          ? `${BASE_URL}/api/leave-balance-overview`
+          ? `${BASE_URL}/api/leave-balance-overview?userId=${user?.id}&leaveTypeId=${selectedLeaveType.id}`
           : `${BASE_URL}/api/leave-balance-overview/details?userId=${user?.id}&leaveTypeId=${selectedLeaveType.id}`;
 
         const response = await axios.get(url, {

@@ -2,195 +2,173 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../config/baseUrl";
-import "./login.scss";
 import { useMsal, useIsAuthenticated } from "@azure/msal-react";
 import { loginRequest, graphConfig } from "../../msalConfig";
-import { useSignIn } from "react-auth-kit";
-import { useAuthUser } from "react-auth-kit";
+import { useSignIn, useAuthUser } from "react-auth-kit";
+import { BASE_URL } from "../../config/baseUrl";
+import "./login.scss";
 
 const Login = () => {
-  const signIn = useSignIn();
-  const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
-
-  const [data, setData] = useState({ email: "", password: "" });
-  const [isLoading, setIsLoading] = useState(false);
-
   const { instance, accounts } = useMsal();
-
+  const isAuthenticated = useIsAuthenticated();
+  const signIn = useSignIn();
   const auth = useAuthUser();
 
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [profile, setProfile] = useState(null);
-  const [photoUrl, setPhotoUrl] = useState(null);
+  // 🎯 Handle input changes
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-  const fetchProfile = async () => {
-
-
+  // 🔐 Microsoft Authentication
+  const fetchMicrosoftProfile = async () => {
     if (!isAuthenticated || !accounts.length) return;
- 
- 
-    const account = accounts[0];
- 
- 
+
     try {
+      const account = accounts[0];
       const response = await instance.acquireTokenSilent({
         ...loginRequest,
         account,
       });
- 
- 
-      const token_ = response.accessToken;
-      localStorage.setItem("ms_access_token", token_);
 
-      
- 
- 
+      const msToken = response.accessToken;
+      localStorage.setItem("ms_access_token", msToken);
+
       const profileRes = await fetch(graphConfig.profileEndpoint, {
-        headers: {
-          Authorization: `Bearer ${token_}`,
-        },
+        headers: { Authorization: `Bearer ${msToken}` },
       });
-      const profileData = await profileRes.json();
-      setProfile(profileData);
- 
- 
- 
- 
+      const profile = await profileRes.json();
+
+      let photoUrl = "";
       const photoRes = await fetch(graphConfig.photoEndpoint, {
-        headers: {
-          Authorization: `Bearer ${token_}`,
-        },
+        headers: { Authorization: `Bearer ${msToken}` },
       });
- 
-      let photoUrl='';
- 
+
       if (photoRes.ok) {
         const blob = await photoRes.blob();
-        setPhotoUrl(URL.createObjectURL(blob));
-        photoUrl=URL.createObjectURL(blob);
-        console.log('photo',photoUrl);
-      } else {
-        console.warn("No photo found");
+        photoUrl = URL.createObjectURL(blob);
       }
-      
-      verifyToken(token_,photoUrl);
 
-    } catch (err) {
-      console.error("Error fetching profile or token", err);
+      verifyToken(msToken, photoUrl);
+    } catch (error) {
+      console.error("Microsoft auth error", error);
+      toast.error("Microsoft authentication failed.");
     }
   };
- 
-  const handleLogin_ = () => {
+
+  const handleMicrosoftLogin = () => {
     instance.loginRedirect(loginRequest);
   };
 
-  // 🔐 Auto-redirect if user is already authenticated
-  useEffect(() => {
-    // if (isAuthenticated) {
-    //   navigate("/home");
-    // }
-    const user = auth();
-    console.log('user',user);
-    if(user === null) fetchProfile();
-  }, [isAuthenticated,instance,  accounts, navigate]);
-
-   const verifyToken = async(token_,photoUrl)=>{
+  const verifyToken = async (msToken, photoUrl = null) => {
     setIsLoading(true);
-
     try {
-      const verifyData = {
-        token: token_
-      }
-      const response_ = await axios.post(`${BASE_URL}/api/users/verifyToken`, verifyData);
+      const { data } = await axios.post(`${BASE_URL}/api/users/verifyToken`, {
+        token: msToken,
+      });
 
-      const { id, token, permissions, departmentId } = response_.data;
+      const { id, token, permissions, departmentId } = data;
 
       const success = signIn({
         token,
         expiresIn: 3600,
         tokenType: "Bearer",
-        authState: { id, permissions, jwtToken: token, departmentId, image: photoUrl },
+        authState: { id, permissions, jwtToken: token, departmentId, image: photoUrl, loginMethod: "microsoft" },
       });
 
       if (success) {
         toast.success("Login successful!");
-        navigate("/home"); 
+        navigate("/home");
       } else {
-        toast.error("Authentication failed. Please try again.");
+        toast.error("Authentication failed.");
       }
     } catch (error) {
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "An error occurred. Please try again.";
-      toast.error(` ${message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post(`${BASE_URL}/api/users/login`, data);
-
-      const { id, token, permissions, departmentId } = response.data;
-
-      const success = signIn({
-        token,
-        expiresIn: 3600,
-        tokenType: "Bearer",
-        authState: { id, permissions, jwtToken: token, departmentId },
-      });
-
-      if (success) {
-        toast.success("Login successful!");
-        navigate("/home"); // You can later add role-based redirects here
-      } else {
-        toast.error("Authentication failed. Please try again.");
-      }
-    } catch (error) {
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "An error occurred. Please try again.";
-      toast.error(` ${message}`);
+      toast.error(error?.response?.data?.message || "Token verification failed.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  // 🔐 Manual Login
+  const handleFormLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post(`${BASE_URL}/api/users/login`, formData);
+      const { id, token, permissions, departmentId } = data;
+
+      const success = signIn({
+        token,
+        expiresIn: 3600,
+        tokenType: "Bearer",
+        authState: { id, permissions, jwtToken: token, departmentId, loginMethod: "normal"  },
+      });
+
+      if (success) {
+        toast.success("Login successful!");
+        navigate("/home");
+      } else {
+        toast.error("Login failed.");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Login error.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (auth() === null) fetchMicrosoftProfile();
+  }, [isAuthenticated, accounts]);
 
   return (
     <div className="login-page">
       <div className="login-card">
-        <h2>Welcome back</h2>
-        <p>Please enter your details</p>
-        <form onSubmit={handleLogin_}>
+        <div className="login-header">
+          <h2>Welcome Back</h2>
+          <p>Login to Leave Management System</p>
+        </div>
+
+        <form className="login-form" onSubmit={handleFormLogin}>
           <input
             type="email"
-            placeholder="Email address"
-            value={data.email}
-            onChange={(e) => setData({ ...data, email: e.target.value })}
-            // required
+            name="email"
+            placeholder="Email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className="input-field"
           />
           <input
             type="password"
+            name="password"
             placeholder="Password"
-            value={data.password}
-            onChange={(e) => setData({ ...data, password: e.target.value })}
-            // required
+            required
+            value={formData.password}
+            onChange={handleChange}
+            className="input-field"
           />
-          <div className="options">
-            <a href="#">Forgot password?</a>
-          </div>
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+          <button type="submit" className="login-btn" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <div className="divider">OR</div>
+
+        <button className="microsoft-login" onClick={handleMicrosoftLogin} disabled={isLoading}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            alt="Microsoft"
+            className="microsoft-logo"
+          />
+          {isLoading ? "Signing in..." : "Sign in with Microsoft"}
+        </button>
       </div>
     </div>
   );
